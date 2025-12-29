@@ -10,4 +10,4 @@ subjects:
 roleRef:
   kind: Role # Type of permission object.
   name: pod-reader # Which Role to attach.
-  apiGroups: rbac.authorization.k8s.io # Must match RBAC API group.
+  apiGroup: rbac.authorization.k8s.io # Must match RBAC API group.
