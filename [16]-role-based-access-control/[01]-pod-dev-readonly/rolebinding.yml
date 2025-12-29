@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding # Namespace-scoped binding.
+metadata:
+  name: read-pods-binding
+  namespace: dev # Binding is evaluated only in dev.
+subjects:
+- kind: ServiceAccount # Identity type.
+  name: app-sa # Who gets permissions.
+  namespace: dev # Where that identity exists.
+roleRef:
+  kind: Role # Type of permission object.
+  name: pod-reader # Which Role to attach.
+  apiGroups: rbac.authorization.k8s.io # Must match RBAC API group.
