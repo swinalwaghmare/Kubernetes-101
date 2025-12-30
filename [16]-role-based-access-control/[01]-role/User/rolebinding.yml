@@ -3,7 +3,7 @@ kind: RoleBinding
 metadata:
   name: pod-reader-binding
   namespace: dev
-subject: 
+subjects: 
 - kind: User
   name: pod
   apiGroup: rbac.authorization.k8s.io
