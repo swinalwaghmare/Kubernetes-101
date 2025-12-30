@@ -5,7 +5,7 @@ metadata:
   namespace: dev
 subjects: 
 - kind: User
-  name: pod
+  name: arn:aws:iam::272751720270:user/test-user
   apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
