@@ -1,108 +1,185 @@
-# Kubernetes Ingress Controller (NGINX)
+# 🚀 Kubernetes Ingress on AWS EKS
 
-## 📌 Objective
+This project demonstrates how to deploy a containerized application on **Amazon EKS** and expose it externally using a **Kubernetes Ingress with NGINX Ingress Controller**.
 
-Expose Kubernetes services externally using an Ingress Controller with path-based routing.
+## 🎯 Objective
 
----
+The primary goal of this project is to understand and implement:
 
-## 🧠 Concept
+* How applications are deployed in Kubernetes using **Deployments**
+* How internal communication works using **Services**
+* How external traffic is routed into the cluster using **Ingress**
+* How an **NGINX Ingress Controller** integrates with AWS to provision a LoadBalancer
 
-Ingress is a Kubernetes resource that manages external HTTP/HTTPS access to services.
+This simulates a **real-world production scenario** where applications are exposed to users via a centralized routing layer instead of directly exposing services.
 
-Key components:
 
-* Ingress Resource (rules)
-* Ingress Controller (NGINX)
+## 📌 Architecture Overview
 
----
+```text
+        Internet
+            │
+            ▼
+   AWS LoadBalancer (ELB)
+            │
+            ▼
+   NGINX Ingress Controller
+            │
+            ▼
+        Service (ClusterIP)
+            │
+            ▼
+        Pods (Application)
+```
 
-## 🏗 Architecture
+## 🔄 Request Flow Explained
 
-User → Ingress → Service → Pod
+1. User sends request to **LoadBalancer URL**
+2. Request reaches **NGINX Ingress Controller**
+3. Ingress rules determine routing
+4. Traffic is forwarded to **Service**
+5. Service routes request to one of the **Pods**
+6. Application responds back to user
 
----
 
-## ⚙️ Setup Steps
+## 📸 Final Output
+![Alt Text](./outputs/screenshots/output.png)
 
-### 1. Install Ingress Controller
+## 🧠 Core Concepts
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+### 🔹 1. Amazon EKS (Elastic Kubernetes Service)
 
----
+Amazon EKS is a managed Kubernetes service that eliminates the need to control plane management.
 
-### 2. Deploy Application
-
-kubectl apply -f manifests/deployment.yaml
-
----
-
-### 3. Create Service
-
-kubectl apply -f manifests/service.yaml
-
----
-
-### 4. Create Ingress Resource
-
-kubectl apply -f manifests/ingress.yaml
-
----
-
-## 📂 Manifests
-
-### deployment.yaml
-
-(Explain briefly what it does)
-
-### service.yaml
-
-ClusterIP service to expose the app internally
-
-### ingress.yaml
-
-Routes traffic using host/path rules
+* Handles cluster provisioning and scaling
+* Integrates with AWS networking (VPC, subnets, security groups)
+* Used here as the base infrastructure to run workloads
 
 ---
 
-## 🔍 Verification
+### 🔹 2. Deployment
 
-kubectl get pods
-kubectl get svc
-kubectl get ingress
+A **Deployment** defines how your application runs inside the cluster.
 
----
+* Maintains desired number of pods (replicas)
+* Handles rolling updates and rollbacks
+* Uses container images (Docker)
 
-## 🌐 Testing
+👉 In this project:
 
-curl http://<EXTERNAL-IP>
-
----
-
-## 📸 Output
-
-(Add screenshots or terminal outputs from outputs/ folder)
+* A custom Docker image (`swinalwaghmare/ingress-nginx:v1`) is deployed
+* Pods are automatically managed and restarted if they fail
 
 ---
 
-## ⚠️ Common Issues
+### 🔹 3. Service (ClusterIP)
 
-* Ingress controller not running
-* Wrong service name in ingress.yaml
-* No external IP assigned
+A **Service** provides a stable internal endpoint for pods.
+
+* Pods are ephemeral → IPs change
+* Service ensures consistent communication inside cluster
+* Uses label selectors to route traffic to correct pods
+
+👉 In this project:
+
+* Service type is **ClusterIP**
+* Only accessible within the cluster (not from internet)
 
 ---
 
-## 📚 Learnings
+### 🔹 4. Ingress
 
-* Difference between Service and Ingress
-* How routing works in Kubernetes
-* Role of NGINX Ingress Controller
+Ingress is an API object that manages **external HTTP/HTTPS routing**.
+
+* Routes traffic based on host/path rules
+* Acts as a single entry point into the cluster
+* Requires an Ingress Controller to function
+
+👉 Example:
+
+```
+/ → hello-world service
+```
 
 ---
 
-## 🚀 Improvements (Next Steps)
+### 🔹 5. NGINX Ingress Controller
 
-* Add TLS (HTTPS)
-* Use custom domain
-* Try Traefik ingress controller
+The **Ingress Controller** is the actual component that implements Ingress rules.
+
+* Watches Kubernetes Ingress resources
+* Provisions an AWS LoadBalancer
+* Routes external traffic to services
+
+👉 In this project:
+
+* NGINX controller is deployed using official manifests
+* AWS automatically assigns an **EXTERNAL-IP (LoadBalancer)**
+
+
+## 📁 Project Structure
+
+```
+03-networking/
+└── ingress-nginx/
+    ├── app/              # Application source + Dockerfile
+    ├── manifests/        # Kubernetes YAML files
+    │   ├── deployment.yml
+    │   ├── service.yml
+    │   └── ingress.yml
+    └── README.md
+```
+
+---
+
+## ⚠️ Common Issues & Debugging
+
+### ❌ Ingress not working
+
+* Ingress Controller not installed or not running
+* Check:
+
+  ```bash
+  kubectl get pods -n ingress-nginx
+  ```
+
+---
+
+### ❌ No EXTERNAL-IP
+
+* AWS LoadBalancer provisioning takes time (2–5 mins)
+* Verify:
+
+  ```bash
+  kubectl get svc -n ingress-nginx
+  ```
+
+---
+
+### ❌ Service not reachable
+
+* Incorrect labels/selectors
+* Pods not running
+* Debug:
+
+  ```bash
+  kubectl describe svc <service-name>
+  kubectl logs <pod-name>
+  ```
+
+## 🎯 Key Takeaways
+
+* Separation of concerns:
+
+  * Deployment → application lifecycle
+  * Service → internal networking
+  * Ingress → external routing
+* Ingress enables **scalable and flexible routing**
+* AWS EKS simplifies Kubernetes management
+* NGINX acts as a **reverse proxy + traffic router**
+
+
+## 👨‍💻 Author
+
+**Swinal Waghmare**
+
