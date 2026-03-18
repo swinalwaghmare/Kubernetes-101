@@ -5,7 +5,7 @@ FROM python:3.7-slim
 WORKDIR /app
 
 # Copy the dependencies file to the working directory
-COPY requirements.txt
+COPY requirements.txt .
 
 # Install the dependencies
 RUN pip install -r requirements.txt
