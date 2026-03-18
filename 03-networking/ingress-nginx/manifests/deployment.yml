@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: swinalwaghmare/ingress-nginx
+        image: swinalwaghmare/ingress-nginx:v1
         ports:
         - containerPort: 80
 
