@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: main-appset
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/swinalwaghmare/Kubernetes-101.git
+      revision: main 
+      directories:
+      - path: 11-argocd/deployment/*
+      - path: 11-argocd/networking
+
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: default
+
+      source:
+        repoURL: https://github.com/swinalwaghmare/Kubernetes-101.git
+        targetRevision: main
+        path: '{{path}}'
+              
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{path.basename}}'
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=false
