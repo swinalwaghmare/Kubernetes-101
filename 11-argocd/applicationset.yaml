@@ -10,7 +10,7 @@ spec:
       revision: main 
       directories:
       - path: 11-argocd/deployment/*
-      - path: 11-argocd/networking
+      
 
   template:
     metadata:
