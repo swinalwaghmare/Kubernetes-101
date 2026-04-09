@@ -1,0 +1,3 @@
+resources:
+- controller/nginx-controller.yaml
+- ingress/ingress.yaml

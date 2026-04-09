@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  runtimeClassName: test-pod-rc # remove if not using runtime class
+  containers:
+  - name: nginx-container
+    image: nginx
+    resources:
+      limits:
+        cpu: 500m
+        memory: 100Mi

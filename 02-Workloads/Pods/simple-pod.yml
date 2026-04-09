@@ -5,6 +5,7 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: nginx:1.14.2
+    image: httpd:2.4
+    imagePullPolicy: Never
     ports:
     - containerPort: 80
