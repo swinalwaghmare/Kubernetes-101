@@ -20,7 +20,7 @@ spec:
       serviceAccountName: irsa-sa-be
       containers:
         - name: datastore-backend
-          image: 339712871812.dkr.ecr.us-east-1.amazonaws.com/backend:2.0
+          image: 339712871812.dkr.ecr.us-east-1.amazonaws.com/backend:latest
           env:
             - name: MYSQL_HOST
               valueFrom:
